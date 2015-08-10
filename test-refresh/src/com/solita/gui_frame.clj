@@ -1,4 +1,4 @@
-(ns com.jakemccrary.gui-frame
+(ns com.solita.gui-frame
   (:require  [clojure.test :refer :all]
              [clojure.core.async :refer [>! <! chan go-loop go]])
   (:import [javax.swing JFrame JButton JList JPanel BoxLayout JScrollPane JTextArea Box]

@@ -6,7 +6,7 @@
             [leiningen.core.project :as project]))
 
 (defn- add-deps [project]
-  (let [test-refresh-plugin (first (filter (fn [[name version]] (= name 'com.jakemccrary/lein-test-refresh-gui)) (:plugins project)))]
+  (let [test-refresh-plugin (first (filter (fn [[name version]] (= name 'com.solita/lein-test-refresh-gui)) (:plugins project)))]
     (deps/add-if-missing project test-refresh-plugin)))
 
 (defn- clojure-test-directories [project]
@@ -44,6 +44,6 @@
         {:keys [test-paths] :as options} (parse-commandline project args)]
     (eval/eval-in-project
      project
-     `(com.jakemccrary.test-refresh/monitor-project ~test-paths
+     `(com.solita.test-refresh/monitor-project ~test-paths
                                                     '~options)
-     `(require 'com.jakemccrary.test-refresh))))
+     `(require 'com.solita.test-refresh))))

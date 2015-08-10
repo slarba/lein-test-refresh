@@ -1,7 +1,7 @@
-(defproject com.jakemccrary/lein-test-refresh-gui "0.10.1-SNAPSHOT"
-  :description "Automatically reload code and run clojure.test tests when files change"
-  :url "https://github.com/jakemcc/lein-test-refresh"
-  :developer "Jake McCrary"
+(defproject com.solita/lein-test-refresh-gui "0.10.1-SNAPSHOT"
+  :description "Automatically reload code and run clojure.test tests when files change and display graphical report"
+  :url "https://github.com/slarba/lein-test-refresh"
+  :developer "Marko Lauronen based on work of Jake McCrary"
   :min-lein-version "2.4"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -15,4 +15,4 @@
                                      :username :gpg :password :gpg}]]
   :profiles {:dev {:dependencies [[org.clojure/clojure "1.6.0"]]}}
   :scm {:name "git"
-        :url "git@github.com:jakemcc/lein-test-refresh.git"})
+        :url "git@github.com:slarba/lein-test-refresh.git"})

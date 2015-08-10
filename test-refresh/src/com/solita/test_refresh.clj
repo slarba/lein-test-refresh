@@ -1,4 +1,4 @@
-(ns com.jakemccrary.test-refresh
+(ns com.solita.test-refresh
   (:require clojure.java.shell
             [clojure.string :as str]
             clojure.test
@@ -7,10 +7,8 @@
             clojure.tools.namespace.repl
             clojure.tools.namespace.track
             jakemcc.clojure-gntp.gntp
-            [com.jakemccrary.gui-frame :as gui])
-  (:import [java.text SimpleDateFormat]
-           [java.io PrintWriter]
-           [java.io StringWriter]))
+            [com.solita.gui-frame :as gui])
+  (:import [java.text SimpleDateFormat]))
 
 (gui/init)
 
