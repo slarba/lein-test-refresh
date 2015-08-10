@@ -60,7 +60,9 @@
       {:status "Failed" :message (format "Failed %s of %s assertions"
                                          (+ fail error)
                                          (+ fail error pass))}
-      {:status "Passed" :message (format "Passed all tests")})))
+      (do
+        (gui/send-result {:type :pass})
+        {:status "Passed" :message (format "Passed all tests")}))))
 
 (def failed-tests (atom #{}))
 
@@ -74,11 +76,15 @@
   (reduce conj tracked-tests (map str new-tests)))
 
 (def capture-report clojure.test/report)
-(let [fail (get-method clojure.test/report :fail)]
+(let [fail (get-method clojure.test/report :fail)
+      error (get-method clojure.test/report :error)]
   (defmethod capture-report :fail [x]
-    (gui/send-result {:error true :title (str x)})
+    (gui/send-result x)
     (swap! failed-tests update-tracked-failing-tests clojure.test/*testing-vars*)
-    (fail x)))
+    (fail x))
+  (defmethod capture-report :error [x]
+    (gui/send-result x)
+    (error x)))
 
 (defn suppress-unselected-tests
   "A function that figures out which vars need to be suppressed based on the

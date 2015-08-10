@@ -1,33 +1,14 @@
 (ns com.jakemccrary.gui-frame
   (:require  [clojure.test :refer :all]
              [clojure.core.async :refer [>! <! chan go-loop go]])
-  (:import [javax.swing JFrame JButton JList JLabel JPanel BoxLayout JScrollPane]
+  (:import [javax.swing JFrame JButton JList JPanel BoxLayout JScrollPane JTextArea Box]
            [java.awt Color BorderLayout Dimension]))
 
-(def +WINDOW-WIDTH+ 300)
-(def +WINDOW-HEIGHT+ 500)
-(def +RESULT-HEIGHT+ 30)
+(def +RESULT-WIDTH+ 680)
+(def +RESULT-HEIGHT+ 60)
 
-(defn- test-result-box [item]
-  (let [panel (JPanel.)
-        color (if (:error item) Color/RED Color/GREEN)
-        label (JLabel. (:title item))]
-    (doto label
-      (.setHorizontalAlignment JLabel/LEFT_ALIGNMENT))
-    (doto panel
-      (.setBackground color)
-      (.setPreferredSize (Dimension. +WINDOW-WIDTH+ +RESULT-HEIGHT+))
-      (.add label))))
-
-(def sample-results [{:error false :title "Onnistunut 1"}
-                     {:error false :title "Onnistunut 2"}
-                     {:error true :title "Epäonnistunut 1"}
-                     {:error false :title "Onnistunut 3"}
-                     {:error false :title "Onnistunut 4"}
-                     {:error false :title "Onnistunut 4"}
-                     {:error false :title "Onnistunut 4"}
-                     {:error false :title "Onnistunut 4"}
-                     {:error false :title "Onnistunut 4"}])
+(def +WINDOW-WIDTH+ 700)
+(def +WINDOW-HEIGHT+ 250)
 
 (def frame (JFrame. "Harja testit"))
 (def panel (JPanel.))
@@ -35,22 +16,35 @@
                               JScrollPane/VERTICAL_SCROLLBAR_ALWAYS
                               JScrollPane/HORIZONTAL_SCROLLBAR_NEVER))
 
+(def resultbox-dims (Dimension. +RESULT-WIDTH+ +RESULT-HEIGHT+))
+
+(defn- test-result-box [item]
+  (let [type (:type item)
+        color (if (= type :pass)
+                Color/GREEN
+                Color/RED)
+        label-text (if (= type :pass)
+                     (str "Tests OK!")
+                     (str (if (= type :error) "ERROR" "FAIL")
+                          "    " (:file item) ":" (:line item) "\nexpected: " (:expected item) "\nactual: " (:actual item)))
+        label (JTextArea. label-text)]
+    (doto label
+      (.setPreferredSize resultbox-dims)
+      (.setMaximumSize resultbox-dims)
+      (.setLineWrap true)
+      (.setBackground color)
+      (.setEditable false))))
+
 (defn- init-report-frame []
-  (.setPreferredSize scrollpane (Dimension. +WINDOW-WIDTH+ +WINDOW-HEIGHT+))
   (.setLayout panel (BoxLayout. panel BoxLayout/Y_AXIS))
   (doto frame
     (.setDefaultCloseOperation JFrame/HIDE_ON_CLOSE)
-    (.setLayout (BorderLayout.))
-    (.add scrollpane BorderLayout/CENTER)
+    (.add scrollpane)
     (.setLocationRelativeTo nil)
     (.setSize +WINDOW-WIDTH+ +WINDOW-HEIGHT+)
     (.setVisible true)))
 
 (def test-result-channel (chan))
-
-(defn- shout [msg]
-  (println "----------------------------------------- ************")
-  (println msg))
 
 (defn- revalidate-results []
   (doto panel
@@ -62,10 +56,15 @@
   (revalidate-results))
 
 (defn- add-test-result [result]
-  (.add panel (test-result-box result))
+  (doto panel
+    (.add (test-result-box result))
+    (.add (Box/createRigidArea (Dimension. 0 5))))
   (revalidate-results))
 
-(defn send-result [result]
+(defn send-result
+  "Send test result. Map with :clear key true will clear the result list, otherwise
+  it should contain clojure.test report map"
+  [result]
   (go (>! test-result-channel result)))
 
 (defn init []
