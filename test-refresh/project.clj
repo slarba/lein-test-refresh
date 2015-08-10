@@ -1,4 +1,4 @@
-(defproject com.jakemccrary/lein-test-refresh "0.10.1-SNAPSHOT"
+(defproject com.jakemccrary/lein-test-refresh-gui "0.10.1-SNAPSHOT"
   :description "Automatically reload code and run clojure.test tests when files change"
   :url "https://github.com/jakemcc/lein-test-refresh"
   :developer "Jake McCrary"
@@ -7,6 +7,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/tools.namespace "0.2.11" :exclusions [org.clojure/clojure]]
                  [leinjacker "0.4.2" :exclusions [org.clojure/clojure]]
+                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [jakemcc/clojure-gntp "0.1.1" :exclusions [org.clojure/clojure]]]
   :deploy-repositories [["snapshots" {:url "https://clojars.org/repo"
                                       :username :gpg :password :gpg}]

@@ -6,8 +6,13 @@
             clojure.tools.namespace.find
             clojure.tools.namespace.repl
             clojure.tools.namespace.track
-            jakemcc.clojure-gntp.gntp)
-  (:import [java.text SimpleDateFormat]))
+            jakemcc.clojure-gntp.gntp
+            [com.jakemccrary.gui-frame :as gui])
+  (:import [java.text SimpleDateFormat]
+           [java.io PrintWriter]
+           [java.io StringWriter]))
+
+(gui/init)
 
 (defn- make-change-tracker []
   (clojure.tools.namespace.track/tracker))
@@ -71,6 +76,7 @@
 (def capture-report clojure.test/report)
 (let [fail (get-method clojure.test/report :fail)]
   (defmethod capture-report :fail [x]
+    (gui/show-results {:error true :title (str x)})
     (swap! failed-tests update-tracked-failing-tests clojure.test/*testing-vars*)
     (fail x)))
 
@@ -121,6 +127,7 @@
 (defn run-selected-tests [test-paths selectors]
   (let [test-namespaces (namespaces-in-directories test-paths)
         selected-test-namespaces (nses-selectors-match selectors test-namespaces)]
+    (gui/show-results (map #({:error false :title (str %)}) selected-test-namespaces))
     (binding [clojure.test/report capture-report]
       (reset! failed-tests #{})
       (summary
