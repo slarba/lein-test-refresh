@@ -76,7 +76,7 @@
 (def capture-report clojure.test/report)
 (let [fail (get-method clojure.test/report :fail)]
   (defmethod capture-report :fail [x]
-    (gui/show-results {:error true :title (str x)})
+    (gui/send-result {:error true :title (str x)})
     (swap! failed-tests update-tracked-failing-tests clojure.test/*testing-vars*)
     (fail x)))
 
@@ -127,7 +127,7 @@
 (defn run-selected-tests [test-paths selectors]
   (let [test-namespaces (namespaces-in-directories test-paths)
         selected-test-namespaces (nses-selectors-match selectors test-namespaces)]
-    (gui/show-results (map #({:error false :title (str %)}) selected-test-namespaces))
+    (gui/send-result {:clear true})
     (binding [clojure.test/report capture-report]
       (reset! failed-tests #{})
       (summary

@@ -8,13 +8,16 @@
 (def +WINDOW-HEIGHT+ 500)
 (def +RESULT-HEIGHT+ 30)
 
-(defn test-result-box [item]
+(defn- test-result-box [item]
   (let [panel (JPanel.)
-        color (if (:error item) Color/RED Color/GREEN)]
+        color (if (:error item) Color/RED Color/GREEN)
+        label (JLabel. (:title item))]
+    (doto label
+      (.setHorizontalAlignment JLabel/LEFT_ALIGNMENT))
     (doto panel
       (.setBackground color)
       (.setPreferredSize (Dimension. +WINDOW-WIDTH+ +RESULT-HEIGHT+))
-      (.add (JLabel. (:title item))))))
+      (.add label))))
 
 (def sample-results [{:error false :title "Onnistunut 1"}
                      {:error false :title "Onnistunut 2"}
@@ -32,7 +35,7 @@
                               JScrollPane/VERTICAL_SCROLLBAR_ALWAYS
                               JScrollPane/HORIZONTAL_SCROLLBAR_NEVER))
 
-(defn init-report-frame []
+(defn- init-report-frame []
   (.setPreferredSize scrollpane (Dimension. +WINDOW-WIDTH+ +WINDOW-HEIGHT+))
   (.setLayout panel (BoxLayout. panel BoxLayout/Y_AXIS))
   (doto frame
@@ -45,18 +48,31 @@
 
 (def test-result-channel (chan))
 
-(defn update-test-results [results]
-  (.removeAll panel)
-  (doseq [i results]
-    (.add panel (test-result-box i)))
+(defn- shout [msg]
+  (println "----------------------------------------- ************")
+  (println msg))
+
+(defn- revalidate-results []
   (doto panel
     (.revalidate)
     (.repaint)))
 
+(defn- clear-test-results []
+  (.removeAll panel)
+  (revalidate-results))
+
+(defn- add-test-result [result]
+  (.add panel (test-result-box result))
+  (revalidate-results))
+
+(defn send-result [result]
+  (go (>! test-result-channel result)))
+
 (defn init []
   (init-report-frame)
   (go-loop []
-    (update-test-results (<! test-result-channel))))
-
-(defn show-results [results]
-  (go (>! test-result-channel results)))
+    (let [msg (<! test-result-channel)]
+      (if (:clear msg)
+        (clear-test-results)
+        (add-test-result msg)))
+    (recur)))
