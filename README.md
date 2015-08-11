@@ -26,7 +26,7 @@ In addition to original functionality, it displays a small and crude test status
 Add the above to your `~/.lein/profiles.clj`. It should look similar to below.
 
 ```clojure
-{:user {:plugins [[com.solita/lein-test-refresh-gui "0.10.1"]]}}
+{:user {:plugins [[com.solita/lein-test-refresh-gui "0.10.3"]]}}
 ```
 
 Alternatively you may add it to your `project.clj`.
@@ -34,7 +34,7 @@ Alternatively you may add it to your `project.clj`.
 ```clojure
 (defproject sample
   :dependencies [[org.clojure/clojure "1.6.0"]]
-  :profiles {:dev {:plugins [[com.solita/lein-test-refresh-gui "0.10.1"]]}})
+  :profiles {:dev {:plugins [[com.solita/lein-test-refresh-gui "0.10.3"]]}})
 ```
 
 Enter your project's root directory and run `lein test-refresh`. The
