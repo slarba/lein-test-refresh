@@ -1,7 +1,7 @@
-(defproject com.solita/lein-test-refresh-gui "0.10.1-SNAPSHOT"
-  :description "Automatically reload code and run clojure.test tests when files change and display graphical report"
+(defproject com.solita/lein-test-refresh-gui "0.10.1"
+  :description "Automatically reload code and run clojure.test tests when files change and display (a crude) graphical test report. Based on lein-test-refresh by Jake McCrary (github.com/jakemcc)"
   :url "https://github.com/slarba/lein-test-refresh"
-  :developer "Marko Lauronen based on work of Jake McCrary"
+  :developer "Marko Lauronen, Jake McCrary"
   :min-lein-version "2.4"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}

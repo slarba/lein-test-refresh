@@ -10,7 +10,7 @@
 (def +WINDOW-WIDTH+ 700)
 (def +WINDOW-HEIGHT+ 250)
 
-(def frame (JFrame. "Harja testit"))
+(def frame (JFrame. "Test report"))
 (def panel (JPanel.))
 (def scrollpane (JScrollPane. panel
                               JScrollPane/VERTICAL_SCROLLBAR_ALWAYS
