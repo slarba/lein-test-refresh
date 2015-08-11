@@ -1,11 +1,11 @@
 (ns com.solita.gui-frame
   (:require  [clojure.test :refer :all]
              [clojure.core.async :refer [>! <! chan go-loop go]])
-  (:import [javax.swing JFrame JButton JList JPanel BoxLayout JScrollPane JTextArea Box]
+  (:import [javax.swing JFrame JButton JList JPanel BoxLayout JScrollPane JTextArea Box JProgressBar]
            [java.awt Color BorderLayout Dimension]))
 
 (def +RESULT-WIDTH+ 680)
-(def +RESULT-HEIGHT+ 60)
+(def +RESULT-HEIGHT+ 80)
 
 (def +WINDOW-WIDTH+ 700)
 (def +WINDOW-HEIGHT+ 250)
@@ -18,13 +18,21 @@
 
 (def resultbox-dims (Dimension. +RESULT-WIDTH+ +RESULT-HEIGHT+))
 
+(def progressbar-running (atom false))
+
+(defn- progressbar []
+  (let [pbar (JProgressBar.)]
+    (doto pbar
+      (.setPreferredSize resultbox-dims)
+      (.setIndeterminate true))))
+
 (defn- test-result-box [item]
   (let [type (:type item)
         color (if (= type :pass)
                 Color/GREEN
                 Color/RED)
         label-text (if (= type :pass)
-                     (str "Tests OK!")
+                     (str "\n\n              Tests OK!")
                      (str (if (= type :error) "ERROR" "FAIL")
                           "    " (:file item) ":" (:line item) "\nexpected: " (:expected item) "\nactual: " (:actual item)))
         label (JTextArea. label-text)]
@@ -51,14 +59,20 @@
     (.revalidate)
     (.repaint)))
 
-(defn- clear-test-results []
-  (.removeAll panel)
-  (revalidate-results))
-
 (defn- add-test-result [result]
+  (when @progressbar-running
+    (reset! progressbar-running false)
+    (.removeAll panel))
   (doto panel
     (.add (test-result-box result))
     (.add (Box/createRigidArea (Dimension. 0 5))))
+  (revalidate-results))
+
+(defn- add-progress-bar []
+  (reset! progressbar-running true)
+  (doto panel
+    (.removeAll)
+    (.add (progressbar)))
   (revalidate-results))
 
 (defn send-result
@@ -72,6 +86,6 @@
   (go-loop []
     (let [msg (<! test-result-channel)]
       (if (:clear msg)
-        (clear-test-results)
+        (add-progress-bar)
         (add-test-result msg)))
     (recur)))

@@ -1,4 +1,4 @@
-(defproject com.solita/lein-test-refresh-gui "0.10.1"
+(defproject com.solita/lein-test-refresh-gui "0.10.3"
   :description "Automatically reload code and run clojure.test tests when files change and display (a crude) graphical test report. Based on lein-test-refresh by Jake McCrary (github.com/jakemcc)"
   :url "https://github.com/slarba/lein-test-refresh"
   :developer "Marko Lauronen, Jake McCrary"
