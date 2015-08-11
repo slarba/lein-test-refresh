@@ -21,7 +21,7 @@ In addition to original functionality, it displays a small and crude test status
 
 ## Usage
 
-![Latest version](https://clojars.org/com.jakemccrary/lein-test-refresh/latest-version.svg)
+![Latest version](https://clojars.org/com.solita/lein-test-refresh-gui/latest-version.svg)
 
 Add the above to your `~/.lein/profiles.clj`. It should look similar to below.
 
