@@ -104,7 +104,7 @@ The latest version is the highest non-snapshot version found in
 [CHANGES.md](CHANGES.md) or whatever the below images says (sometimes
 image doesn't seem to load).
 
-![Latest version](https://clojars.org/com.jakemccrary/lein-test-refresh/latest-version.svg)
+![Latest version](https://clojars.org/com.solita/lein-test-refresh-gui/latest-version.svg)
 
 ## Compatibility
 
